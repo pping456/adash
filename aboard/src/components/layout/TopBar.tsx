@@ -47,21 +47,21 @@ const TopBar = ({ activeScreen, onNavigate }: TopBarProps) => {
   return (
     <header
       className="fixed top-0 right-0 z-30 flex items-center justify-between px-6"
-      style={{ left: 260, height: 64, background: '#fff', borderBottom: '1px solid #e5eaf2', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
+      style={{ left: 260, height: 64, background: '#0B1F3A', borderBottom: '1px solid #17355d', boxShadow: '0 1px 4px rgba(0,0,0,0.18)' }}
     >
       {/* Left: Breadcrumb */}
       <div>
-        <p className="text-xs text-slate-400 font-medium uppercase tracking-wide">Admin Panel</p>
-        <h1 className="text-base font-semibold text-slate-800 leading-tight">{screenLabels[activeScreen]}</h1>
+        <p className="text-xs text-slate-300 font-medium uppercase tracking-wide">Admin Panel</p>
+        <h1 className="text-base font-semibold text-white leading-tight">{screenLabels[activeScreen]}</h1>
       </div>
 
       {/* Center: Search */}
-      <div className="hidden md:flex items-center gap-2 rounded-lg px-3 py-2 w-72" style={{ background: '#f4f6f9', border: '1px solid #e5eaf2' }}>
-        <Search size={15} className="text-slate-400" />
+      <div className="hidden md:flex items-center gap-2 rounded-lg px-3 py-2 w-72" style={{ background: '#102947', border: '1px solid #17355d' }}>
+        <Search size={15} className="text-slate-300" />
         <input
           type="text"
           placeholder="Search anything..."
-          className="bg-transparent outline-none text-sm text-slate-600 placeholder-slate-400 w-full"
+          className="bg-transparent outline-none text-sm text-white placeholder-slate-300 w-full"
         />
       </div>
 
@@ -72,9 +72,9 @@ const TopBar = ({ activeScreen, onNavigate }: TopBarProps) => {
           <button
             onClick={() => setNotifOpen(v => !v)}
             className="relative flex items-center justify-center rounded-full w-9 h-9 transition-colors"
-            style={{ background: notifOpen ? '#eff6ff' : '#f4f6f9', border: '1px solid #e5eaf2' }}
+            style={{ background: notifOpen ? '#102947' : '#102947', border: '1px solid #17355d' }}
           >
-            <Bell size={17} className="text-slate-600" />
+            <Bell size={17} className="text-slate-100" />
             {unreadCount > 0 && (
               <span
                 className="absolute -top-1 -right-1 text-white text-[10px] font-bold rounded-full flex items-center justify-center"
@@ -133,15 +133,15 @@ const TopBar = ({ activeScreen, onNavigate }: TopBarProps) => {
         </div>
 
         {/* Profile */}
-        <div className="flex items-center gap-2 rounded-lg px-3 py-2 cursor-pointer" style={{ background: '#f4f6f9', border: '1px solid #e5eaf2' }}>
+        <div className="flex items-center gap-2 rounded-lg px-3 py-2 cursor-pointer" style={{ background: '#102947', border: '1px solid #17355d' }}>
           <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold" style={{ background: '#071224' }}>
             A
           </div>
           <div className="hidden sm:block">
-            <p className="text-xs font-semibold text-slate-700 leading-none">Admin</p>
-            <p className="text-[10px] text-slate-400 mt-0.5">Super Administrator</p>
+            <p className="text-xs font-semibold text-white leading-none">Admin</p>
+            <p className="text-[10px] text-slate-300 mt-0.5">Super Administrator</p>
           </div>
-          <ChevronDown size={13} className="text-slate-400 hidden sm:block" />
+          <ChevronDown size={13} className="text-slate-300 hidden sm:block" />
         </div>
       </div>
     </header>
