@@ -4,7 +4,18 @@ import { TIMETABLE_COURSES, TIMETABLE_BATCHES, TIMETABLE_GRID } from '@/constant
 import { toast } from 'sonner';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-const SLOTS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const TIME_SLOTS = [
+  { id: '08:00-09:00', label: '08:00 - 09:00' },
+  { id: '09:00-10:00', label: '09:00 - 10:00' },
+  { id: '10:00-11:00', label: '10:00 - 11:00' },
+  { id: '11:00-12:00', label: '11:00 - 12:00' },
+  { id: '12:00-13:00', label: '12:00 - 13:00' },
+  { id: '13:00-14:00', label: '13:00 - 14:00' },
+  { id: '14:00-15:00', label: '14:00 - 15:00' },
+  { id: '15:00-16:00', label: '15:00 - 16:00' },
+  { id: '16:00-17:00', label: '16:00 - 17:00' },
+  { id: '17:00-18:00', label: '17:00 - 18:00' },
+];
 
 const getCourseStyle = (code: string) => {
   const c = TIMETABLE_COURSES.find(c => c.code === code);
@@ -16,6 +27,7 @@ const TimetableManagement = () => {
   const [selectedBatch, setSelectedBatch] = useState('');
   const [selectedTeacher, setSelectedTeacher] = useState('');
   const [selectedCourse, setSelectedCourse] = useState('');
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
   const [generated, setGenerated] = useState(true);
   const [conflicts, setConflicts] = useState(2);
 
@@ -24,6 +36,8 @@ const TimetableManagement = () => {
     setGenerated(true);
     setConflicts(2);
   };
+
+  const visibleSlots = selectedTimeSlot ? TIME_SLOTS.filter(slot => slot.id === selectedTimeSlot) : TIME_SLOTS;
 
   return (
     <div className="space-y-5">
@@ -35,7 +49,7 @@ const TimetableManagement = () => {
       {/* Control Panel */}
       <div className="bg-white rounded-xl p-5" style={{ border: '1px solid #e5eaf2', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
         <h3 className="text-sm font-semibold text-slate-700 mb-4">Schedule Configuration</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           <div>
             <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wide">Room</label>
             <select value={selectedRoom} onChange={e => setSelectedRoom(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm outline-none" style={{ border: '1px solid #e5eaf2', background: '#f8fafc', color: '#334155' }}>
@@ -62,6 +76,13 @@ const TimetableManagement = () => {
             <select value={selectedCourse} onChange={e => setSelectedCourse(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm outline-none" style={{ border: '1px solid #e5eaf2', background: '#f8fafc', color: '#334155' }}>
               <option value="">All Courses</option>
               {TIMETABLE_COURSES.map(c => <option key={c.code}>{c.code}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wide">Time Slot</label>
+            <select value={selectedTimeSlot} onChange={e => setSelectedTimeSlot(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm outline-none" style={{ border: '1px solid #e5eaf2', background: '#f8fafc', color: '#334155' }}>
+              <option value="">All Time Slots</option>
+              {TIME_SLOTS.map(slot => <option key={slot.id} value={slot.id}>{slot.label}</option>)}
             </select>
           </div>
         </div>
@@ -92,7 +113,7 @@ const TimetableManagement = () => {
           <table style={{ minWidth: 900, borderCollapse: 'collapse', tableLayout: 'fixed' }}>
             <colgroup>
               <col style={{ width: 140 }} />
-              {DAYS.flatMap(() => SLOTS.map(() => <col key={Math.random()} style={{ width: 52 }} />))}
+              {DAYS.flatMap(() => visibleSlots.map(() => <col key={Math.random()} style={{ width: 72 }} />))}
             </colgroup>
             <thead>
               {/* Day row */}
@@ -101,7 +122,7 @@ const TimetableManagement = () => {
                   Lesson Grid / Room Supervision
                 </th>
                 {DAYS.map(day => (
-                  <th key={day} colSpan={10} className="py-2 text-center text-xs font-bold text-white" style={{ borderRight: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
+                  <th key={day} colSpan={visibleSlots.length} className="py-2 text-center text-xs font-bold text-white" style={{ borderRight: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
                     {day}
                   </th>
                 ))}
@@ -110,9 +131,9 @@ const TimetableManagement = () => {
               <tr style={{ background: '#0f1f38' }}>
                 <th className="px-3 py-1.5" style={{ borderRight: '1px solid rgba(255,255,255,0.1)' }} />
                 {DAYS.flatMap(day =>
-                  SLOTS.map(slot => (
-                    <th key={`${day}-${slot}`} className="text-center text-[10px] font-bold py-1.5" style={{ color: '#94a3b8', borderRight: slot === 10 ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(255,255,255,0.05)', minWidth: 48 }}>
-                      {slot}
+                  visibleSlots.map((slot, index) => (
+                    <th key={`${day}-${slot.id}`} className="text-center text-[10px] font-bold py-1.5" style={{ color: '#94a3b8', borderRight: index === visibleSlots.length - 1 ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(255,255,255,0.05)', minWidth: 72 }}>
+                      {slot.label}
                     </th>
                   ))
                 )}
@@ -125,7 +146,7 @@ const TimetableManagement = () => {
                     {batch}
                   </td>
                   {DAYS.flatMap((_, dIdx) =>
-                    SLOTS.map((_, sIdx) => {
+                    visibleSlots.map((_, sIdx) => {
                       const code = TIMETABLE_GRID[bIdx]?.[dIdx]?.[sIdx] || '';
                       const style = code ? getCourseStyle(code) : null;
                       const isConflict = code && bIdx < 2 && dIdx === 0 && sIdx === 0;
