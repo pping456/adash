@@ -22,18 +22,34 @@ const screenLabels: Record<ScreenType, string> = {
 const TopBar = ({ activeScreen, onNavigate }: TopBarProps) => {
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState(NOTIFICATIONS);
+  const [profile, setProfile] = useState({ name: 'Admin', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120&q=80' });
   const ref = useRef<HTMLDivElement>(null);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
   useEffect(() => {
+    const loadProfile = () => {
+      const saved = localStorage.getItem('admin-profile');
+      if (saved) {
+        try {
+          setProfile(prev => ({ ...prev, ...JSON.parse(saved) }));
+        } catch { /* ignore */ }
+      }
+    };
+
+    loadProfile();
+    window.addEventListener('profile-updated', loadProfile);
+
     const handler = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         setNotifOpen(false);
       }
     };
     document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+    return () => {
+      window.removeEventListener('profile-updated', loadProfile);
+      document.removeEventListener('mousedown', handler);
+    };
   }, []);
 
   const markAllRead = () => setNotifications(prev => prev.map(n => ({ ...n, read: true })));
@@ -134,11 +150,9 @@ const TopBar = ({ activeScreen, onNavigate }: TopBarProps) => {
 
         {/* Profile */}
         <div className="flex items-center gap-2 rounded-lg px-3 py-2 cursor-pointer" style={{ background: '#102947', border: '1px solid #17355d' }}>
-          <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold" style={{ background: '#071224' }}>
-            A
-          </div>
+          <img src={profile.avatar} alt="Profile" className="w-7 h-7 rounded-full object-cover" />
           <div className="hidden sm:block">
-            <p className="text-xs font-semibold text-white leading-none">Admin</p>
+            <p className="text-xs font-semibold text-white leading-none">{profile.name}</p>
             <p className="text-[10px] text-slate-300 mt-0.5">Super Administrator</p>
           </div>
           <ChevronDown size={13} className="text-slate-300 hidden sm:block" />

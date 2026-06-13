@@ -1,11 +1,43 @@
-import { useState } from 'react';
-import { Lock, Eye, EyeOff, ShieldCheck, CheckCircle } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Lock, Eye, EyeOff, ShieldCheck, CheckCircle, Camera, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
+
+const defaultProfile = {
+  name: 'Admin',
+  avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120&q=80',
+};
 
 const Settings = () => {
   const [form, setForm] = useState({ current: '', next: '', confirm: '' });
   const [show, setShow] = useState({ current: false, next: false, confirm: false });
   const [saved, setSaved] = useState(false);
+  const [profile, setProfile] = useState(defaultProfile);
+
+  useEffect(() => {
+    const savedProfile = localStorage.getItem('admin-profile');
+    if (savedProfile) {
+      try { setProfile({ ...defaultProfile, ...JSON.parse(savedProfile) }); } catch { /* ignore */ }
+    }
+  }, []);
+
+  const handleProfileSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    localStorage.setItem('admin-profile', JSON.stringify(profile));
+    window.dispatchEvent(new Event('profile-updated'));
+    toast.success('Profile updated successfully!');
+  };
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = typeof reader.result === 'string' ? reader.result : '';
+      setProfile(prev => ({ ...prev, avatar: result || prev.avatar }));
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,6 +78,48 @@ const Settings = () => {
       <div>
         <h2 className="text-xl font-bold text-slate-800">Settings</h2>
         <p className="text-sm text-slate-500 mt-0.5">Manage your account security settings</p>
+      </div>
+
+      {/* Profile Update */}
+      <div className="bg-white rounded-2xl" style={{ border: '1px solid #e5eaf2', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+        <div className="px-6 py-4" style={{ borderBottom: '1px solid #f0f4f8' }}>
+          <h3 className="font-bold text-slate-800">Profile Settings</h3>
+          <p className="text-xs text-slate-500 mt-0.5">Update your display name and profile picture here.</p>
+        </div>
+        <form onSubmit={handleProfileSave} className="p-6 space-y-5">
+          <div className="flex items-center gap-4">
+            <div className="relative h-16 w-16 rounded-full overflow-hidden border border-slate-200 bg-slate-100">
+              <img src={profile.avatar} alt="Profile preview" className="h-full w-full object-cover" />
+            </div>
+            <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-600 hover:bg-slate-100">
+              <Camera size={14} />
+              <span>Change photo</span>
+              <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+            </label>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-slate-600 mb-2">Display Name</label>
+            <div className="relative">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                <UserRound size={15} className="text-slate-400" />
+              </div>
+              <input
+                type="text"
+                value={profile.name}
+                onChange={e => setProfile(prev => ({ ...prev, name: e.target.value }))}
+                className="w-full pl-9 pr-3 py-2.5 rounded-xl text-sm outline-none transition-all"
+                style={{ border: '1.5px solid #e5eaf2', background: '#f8fafc', color: '#334155' }}
+                onFocus={e => (e.target.style.border = '1.5px solid #3b82f6')}
+                onBlur={e => (e.target.style.border = '1.5px solid #e5eaf2')}
+              />
+            </div>
+          </div>
+
+          <button type="submit" className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 active:scale-95" style={{ background: 'linear-gradient(135deg, #071224 0%, #1d4ed8 100%)' }}>
+            Save Profile
+          </button>
+        </form>
       </div>
 
       {/* Security Badge */}

@@ -52,7 +52,7 @@ export const USERS: User[] = [
 ];
 
 export const DEPARTMENTS: Department[] = [
-  { id: '1', name: 'Computer Science', shortName: 'CS', facultyCount: 18, blocks: ['Block B', 'Block C'], studentCount: 320, head: 'Prof. Nadia Siddiqui' },
+  { id: '1', name: 'Computer Science', shortName: 'CS', facultyCount: 18, blocks: ['Block B'], studentCount: 320, head: 'Prof. Nadia Siddiqui' },
   { id: '2', name: 'Software Engineering', shortName: 'SE', facultyCount: 14, blocks: ['Block B'], studentCount: 260, head: 'Prof. Kamran Shah' },
   { id: '3', name: 'Data Science', shortName: 'DS', facultyCount: 10, blocks: ['Block A'], studentCount: 180, head: 'Dr. Tariq Raza' },
   { id: '4', name: 'Economics', shortName: 'ECO', facultyCount: 12, blocks: ['Block A'], studentCount: 210, head: 'Dr. Salma Qureshi' },
