@@ -63,7 +63,7 @@ const TopBar = ({ activeScreen, onNavigate }: TopBarProps) => {
   return (
     <header
       className="fixed top-0 right-0 z-30 flex items-center justify-between px-6"
-      style={{ left: 260, height: 64, background: '#0B1F3A', borderBottom: '1px solid #17355d', boxShadow: '0 1px 4px rgba(0,0,0,0.18)' }}
+      style={{ left: 260, height: 64, background: '#001F5B', borderBottom: '1px solid #0B2F7D', boxShadow: '0 1px 4px rgba(0,0,0,0.18)' }}
     >
       {/* Left: Breadcrumb */}
       <div>

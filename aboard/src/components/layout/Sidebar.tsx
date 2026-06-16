@@ -22,7 +22,7 @@ const Sidebar = ({ active, onNavigate, pendingCount }: SidebarProps) => {
   return (
     <aside
       className="fixed left-0 top-0 h-screen flex flex-col z-40"
-      style={{ width: 260, background: '#0B1F3A' }}
+      style={{ width: 260, background: '#001F5B' }}
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-5 border-b border-white/10">
